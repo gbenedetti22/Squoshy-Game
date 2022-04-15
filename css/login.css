@@ -1,0 +1,115 @@
+.form {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    width: 35%;
+    height: 53%;
+    /*box-shadow: 0 0 15px #888888;*/
+    border-radius: 15px;
+    padding: 20px;
+    background: #ffffff;
+    overflow: hidden;
+}
+
+#title {
+    font-weight: bold;
+    margin-bottom: 20px;
+    font-family: 'Open Sans', sans-serif;
+    text-align: center;
+    color: black;
+    transition: color 0.4s ease-in-out;
+}
+
+#title:hover {
+    color: #ff8400;
+    transition: color 0.4s linear;
+}
+
+body {
+    background-image: url("../assets/bg/login-bg.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-attachment: fixed;
+}
+
+#logLabel {
+    margin-top: 20px;
+    font-size: 17px;
+    text-align: center;
+    color: red;
+}
+
+.fields > label {
+    font-size: 13px;
+    color: #c4c4c4;
+    font-family: 'Open Sans', sans-serif;
+}
+
+form > a {
+    padding-top: 20px;
+    width: 100%;
+    text-align: center;
+    wrap-option: nowrap;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding-bottom: 20px;
+    font-size: 15px;
+    font-family: 'Open Sans', sans-serif;
+}
+
+form > a:visited {
+    text-decoration: none;
+    color: blue;
+}
+
+#button-submit {
+    width: 100%;
+    height: 40px;
+    background: #00bcd4;
+    border-radius: 5px;
+    border: none;
+    color: #fff;
+    font-size: 15px;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+#button-submit:hover {
+    background: #15ccdd;
+}
+
+.fields {
+    padding-top: 30px;
+    width: 60%;
+    display: flex;
+    flex-flow: column;
+    margin: auto;
+}
+
+/* password_repeat serve per la pagina di registrazione */
+#username, #password, #repeat_password {
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: none;
+    border-bottom: 1px solid #ccc;
+    text-align: center;
+    font-size: 18px;
+}
+
+#username:focus, #password:focus, #repeat_password:focus {
+    outline: none;
+    border-bottom: 1px solid #ff8400;
+    transition: border-bottom 0.3s linear;
+}
+
+#username:focus::placeholder, #password:focus::placeholder, #repeat_password:focus::placeholder {
+    color: transparent;
+    transition: color 0.1s linear;
+}

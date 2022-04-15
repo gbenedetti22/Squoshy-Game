@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Scoreboard</title>
+    <link rel="stylesheet" href="../css/scoreboard.css">
+</head>
+<body>
+
+<div class="container">
+    <h1>Scoreboard</h1>
+    <div class="scoreboard">
+        <table id="table"></table>
+    </div>
+
+    <div class="buttons-container">
+        <button onclick="window.location.href='../index.php'">Nuovo tentativo</button>
+        <form action="../php/logout.php" method="post">
+            <input type="submit" value="Logout">
+        </form>
+    </div>
+
+</div>
+<script src="../js/getScores.js"></script>
+</body>
+</html>

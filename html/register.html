@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Registrazione</title>
+    <link rel="stylesheet" href="../css/register.css">
+</head>
+<body>
+
+<div class="form">
+    <h1 id="title">CREA UN ACCOUNT</h1>
+    <form method="post" autocomplete="off" id="registerForm">
+        <div class="fields">
+            <label for="username">Username</label><input type="text" name="username" placeholder="Username" id="username">
+            <label for="password">Password</label><input type="password" name="password" placeholder="Password" id="password">
+            <label for="repeat_password">Ripeti password</label><input type="password" name="repeat_password" placeholder="Ripeti Password" id="repeat_password">
+            <input type="submit" value="Registrati" id="button-submit">
+            <label id="logLabel"></label>
+        </div>
+    </form>
+</div>
+
+<script src="../js/register.js"></script>
+</body>
+</html>
