@@ -5,21 +5,24 @@ session_start();
 $username = $_POST['username'];
 $password = $_POST['password'];
 $response = null;   // viene inizializzata solo se il login avviene con successo
+$responseText = "OK";
 
 if (login($username, $password)) {
-    $dom = getGameDocument("../html/game.html", $response);
-    echo $dom->saveHTML();
+    header("Location: ../html/game.html");
     exit(0);
 } else {
-    http_response_code(404);
+    http_response_code(500);
+    echo $responseText;
     exit(1);
 }
 
-function login($username, $password) {
+function login($username, $password): bool {
+    global $responseText;
+
     $db = new mysqli("localhost", "root", "", "squoshydb");
     if($db->connect_errno > 0){
-        http_response_code(500);
-        die('Unable to connect to database [' . $db->connect_error . ']');
+        $responseText = "Impossibile connettersi al database";
+        return false;
     }
     $smt = $db->prepare("SELECT * FROM squoshydb.players WHERE username = ?");
     $smt->bind_param("s", $username);
@@ -28,6 +31,7 @@ function login($username, $password) {
 
     //caso in cui l utente non esiste
     if($result->num_rows == 0) {
+        $responseText = "Questo utente non esiste";
         $result->close();
         $db->close();
         return false;
@@ -36,6 +40,7 @@ function login($username, $password) {
     $row = $result->fetch_assoc();
     $db_password = $row['password'];
     if(!password_verify($password, $db_password)) {
+        $responseText = "La password inserita non è corretta";
         return false;
     }
 

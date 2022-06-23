@@ -14,6 +14,7 @@ let ajax = new XMLHttpRequest();
 ajax.open("GET", "../php/scores.php", false);
 ajax.send();
 let scores = JSON.parse(ajax.responseText)
+console.log(scores)
 
 let index = 0
 for (const [username, score] of Object.entries(scores)) {
@@ -28,4 +29,5 @@ for (const [username, score] of Object.entries(scores)) {
     scoreCell.innerText = String(score)
 
     usernameCell.className = "show"
+    index++
 }

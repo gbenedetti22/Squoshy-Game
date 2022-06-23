@@ -88,10 +88,6 @@ export class Platform extends Entity {
 
         this.color = color
     }
-
-    setDefaultColor() {
-        this.color = "green"
-    }
 }
 
 export class Enemy extends Entity {
@@ -122,10 +118,6 @@ export class Enemy extends Entity {
 
         this.color = "blue"
         this.score = 1
-    }
-
-    setDefaultColor() {
-        this.color = "blue"
     }
 
     move() {
@@ -268,7 +260,7 @@ export class Player extends Entity {
 
         this.position.y += this.velocity.y
 
-        if (this.position.y + this.size.height + this.velocity.y <= canvas.height) {
+        if (this.position.y + this.size.height + this.velocity.y <= canvas.height + (debug_mode ? 0 : 365)) {
             this.velocity.y += gravity
         } else {
             if(!debug_mode) {
@@ -283,12 +275,7 @@ export class Player extends Entity {
     }
 }
 
-// collision detection on x-axis
-// sostituire la prima e la seconda riga dell if con:
-// player.position.x + player.size.width + player.velocity.x >= platform.position.x
-// player.position.x + player.velocity.x <= platform.position.x + platform.size.width
-// per avere un pò di gap tra il player e la piattaforma
-// (in pratica basta sommare velocity.x al player.position.x)
+// collision detection sull asse delle x
 function collisionX(e1, e2) {
     return e1.position.x + e1.size.width >= e2.position.x &&
         e1.position.x <= e2.position.x + e2.size.width &&
@@ -299,6 +286,6 @@ function collisionX(e1, e2) {
 function collisionY(e1, e2) {
     return e1.position.y + e1.size.height <= e2.position.y &&
         e1.position.y + e1.size.height + e1.velocity.y >= e2.position.y &&
-        e1.position.x + e1.size.width >= e2.position.x &&
-        e1.position.x <= e2.position.x + e2.size.width
+        e1.position.x + e1.size.width >= e2.position.x + e1.velocity.x &&
+        e1.position.x <= e2.position.x + e2.size.width + e1.velocity.x
 }

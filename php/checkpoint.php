@@ -6,7 +6,7 @@ $str_json = file_get_contents('php://input');
 
 $checkpoint = json_decode($str_json);
 $username = $_SESSION['username']->username;
-
+console_log($str_json);
 $executed = prepearExecuteQuery("UPDATE squoshydb.players SET spawnPointX = ?, spawnPointY = ?, currentScore = ? WHERE username = ?",
     "iiis", $checkpoint->x, $checkpoint->y, $checkpoint->score, $_SESSION['username']->username);
 

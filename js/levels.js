@@ -157,17 +157,17 @@ export function level1() {
     const level = nextLevel()
 
     const images = {}
-    images.dirt = getImage("../assets/ground/dirt.png")
-    images.grass = getImage("../assets/ground/grass.png")
-    images.winBlock = getImage("../assets/win/door.png")
-    images.turret = getImage("../assets/turret/turret.png")
-    images.bird = getImage("../assets/bat/bat.png")
-    images.checkpoint = getImage("../assets/checkpoint/checkpoint.png")
-    images.enemy = getImage("../assets/classicEnemy/enemy.png")
-    images.coin = getImage("../assets/coin/coin.png")
+    images.dirt = getImage("./assets/ground/dirt.png")
+    images.grass = getImage("./assets/ground/grass.png")
+    images.winBlock = getImage("./assets/win/door.png")
+    images.turret = getImage("./assets/turret/turret.png")
+    images.bird = getImage("./assets/bat/bat.png")
+    images.checkpoint = getImage("./assets/checkpoint/checkpoint.png")
+    images.enemy = getImage("./assets/classicEnemy/enemy.png")
+    images.coin = getImage("./assets/coin/coin.png")
 
     let buildedLevel = build(level, images)
-    buildedLevel.background = getImage('../assets/bg/background0.png')
+    buildedLevel.background = getImage('./assets/bg/background0.png')
 
     return buildedLevel
 }
@@ -175,19 +175,18 @@ export function level1() {
 export function level2() {
     const level = nextLevel()
 
-
     const images = {}
-    images.dirt = getImage("../assets/ground/dirt.png")
-    images.grass = getImage("../assets/ground/grass.png")
-    images.winBlock = getImage("../assets/win/door.png")
-    images.turret = getImage("../assets/turret/turret.png")
-    images.bird = getImage("../assets/bat/bat.png")
-    images.checkpoint = getImage("../assets/checkpoint/checkpoint.png")
-    images.enemy = getImage("../assets/classicEnemy/enemy.png")
-    images.coin = getImage("../assets/coin/coin.png")
+    images.dirt = getImage("./assets/ground/dirt.png")
+    images.grass = getImage("./assets/ground/grass.png")
+    images.winBlock = getImage("./assets/win/door.png")
+    images.turret = getImage("./assets/turret/turret.png")
+    images.bird = getImage("./assets/bat/bat.png")
+    images.checkpoint = getImage("./assets/checkpoint/checkpoint.png")
+    images.enemy = getImage("./assets/classicEnemy/enemy.png")
+    images.coin = getImage("./assets/coin/coin.png")
 
     let buildedLevel = build(level, images)
-    buildedLevel.background = getImage('../assets/bg/background1.png')
+    buildedLevel.background = getImage('./assets/bg/background1.png')
 
     return buildedLevel
 }
@@ -195,27 +194,27 @@ export function level2() {
 export function level3() {
     const level = nextLevel()
 
-
     const images = {}
-    images.dirt = getImage("../assets/ground/dirt.png")
-    images.grass = getImage("../assets/ground/grass.png")
-    images.winBlock = getImage("../assets/win/door.png")
-    images.turret = getImage("../assets/turret/turret.png")
-    images.bird = getImage("../assets/bat/bat.png")
-    images.checkpoint = getImage("../assets/checkpoint/checkpoint.png")
-    images.enemy = getImage("../assets/classicEnemy/enemy.png")
-    images.coin = getImage("../assets/coin/coin.png")
+    images.dirt = getImage("./assets/ground/dirt.png")
+    images.grass = getImage("./assets/ground/grass.png")
+    images.winBlock = getImage("./assets/win/door.png")
+    images.turret = getImage("./assets/turret/turret.png")
+    images.bird = getImage("./assets/bat/bat.png")
+    images.checkpoint = getImage("./assets/checkpoint/checkpoint.png")
+    images.enemy = getImage("./assets/classicEnemy/enemy.png")
+    images.coin = getImage("./assets/coin/coin.png")
 
     let buildedLevel = build(level, images)
-    buildedLevel.background = getImage('../assets/bg/background2.jpg')
+    buildedLevel.background = getImage('./assets/bg/background2.jpg')
 
     return buildedLevel
 }
 
 function nextLevel() {
     const ajax = new XMLHttpRequest()
-    ajax.open('GET', '../php/levels.php', false)
+    ajax.open('GET', './php/levels.php', false)
     ajax.send()
+    console.log(ajax.responseText)
     let data = JSON.parse(ajax.responseText)
     let level = data.level
     isLastLevel = data.lastLevel

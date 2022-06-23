@@ -1,5 +1,5 @@
-import {blockSize, isLastLevel, level1, level2, level3} from "./levels.js";
-import {CheckPoint, Enemy, Platform, Player, Turret} from "./entities.js";
+import {isLastLevel, level1, level2, level3} from "./levels.js";
+import {CheckPoint, Platform, Player, Turret} from "./entities.js";
 import {canvas, ctx, debug_mode, keysPressed, options} from "./data.js";
 
 canvas.width = window.innerWidth
@@ -8,8 +8,6 @@ document.body.append(canvas)
 
 let player = undefined
 let entities, platforms, enemies, coins, checkpoints, winBlock, backgroundImage = undefined
-let viewPortx1 = 0
-let viewPortx2 = canvas.width
 let currentCheckpoint = undefined
 
 const unlockedPowers = {
@@ -31,13 +29,17 @@ function init(options = {spawnPointX: 0, spawnPointY: 0, currentLevel: 1}) {
     switch (options.currentLevel) {
         case 1:
             level = level1()
+            unlockedPowers.doubleJump = false
+            unlockedPowers.dash = false
             break
         case 2:
             level = level2()
             unlockedPowers.doubleJump = true
+            unlockedPowers.dash = false
             break
         case 3:
             level = level3()
+            unlockedPowers.doubleJump = true
             unlockedPowers.dash = true
             break
         default:
@@ -51,6 +53,8 @@ function init(options = {spawnPointX: 0, spawnPointY: 0, currentLevel: 1}) {
     checkpoints = level.checkpoints
     winBlock = level.winBlock
     backgroundImage = level.background
+
+    canvas.style.backgroundImage = `url(${backgroundImage.src})`
 
     let previousCheckpoints = localStorage.getItem("checkpoints")
 
@@ -67,9 +71,6 @@ function init(options = {spawnPointX: 0, spawnPointY: 0, currentLevel: 1}) {
         }
     }
 
-    viewPortx1 = 0
-    viewPortx2 = canvas.width
-
     entitiesX.clear()
     entities.forEach(entity => {
         if (!entitiesX.has(entity.position.x)) {
@@ -82,20 +83,15 @@ function init(options = {spawnPointX: 0, spawnPointY: 0, currentLevel: 1}) {
 
 let t1 = 0
 
-
 function update() {
     let id = requestAnimationFrame(update)
 
     ctx.clearRect(0, 0, canvas.width, canvas.height)
     ctx.save()
-    ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height)
 
     let limitX = Math.round(innerWidth / 2)
 
     if (player.position.x >= limitX) {
-        viewPortx1 = Math.max(0, player.position.x - limitX - blockSize)
-        viewPortx2 = player.position.x + limitX + blockSize
-
         ctx.translate(-(player.position.x - limitX), 0)
     }
 
@@ -106,36 +102,6 @@ function update() {
         ctx.translate(0, -(player.position.y - limitY))
     }
 
-    //viewport debug
-    // entities.forEach(entity => {
-    //     if ((entity.position.x < viewPortx1 || entity.position.x > viewPortx2)) {
-    //         entity.color = "purple"
-    //     } else {
-    //         entity.setDefaultColor()
-    //     }
-    // })
-
-
-    platforms = []
-    let viewPortEnemies = new Set()
-    for (let i = viewPortx1; i < viewPortx2; i++) {
-        let entitiesOnX = entitiesX.get(i) || []
-
-        for (let entity of entitiesOnX) {
-            if (entity instanceof Platform) {
-                platforms.push(entity)
-            } else if (entity instanceof Enemy) {
-                viewPortEnemies.add(entity)
-            }
-        }
-    }
-
-    for (let enemy of enemies) {
-        if (enemy.endX >= viewPortx1) {
-            viewPortEnemies.add(enemy)
-        }
-    }
-
     if (keysPressed.right) {
         player.velocity.x = player.speed
     } else if (keysPressed.left) {
@@ -143,7 +109,6 @@ function update() {
     } else {
         player.velocity.x = 0
     }
-
 
     if (keysPressed.dashRight) {
         player.velocity.x = 50
@@ -195,14 +160,14 @@ function update() {
 
             if (player.intersectX(platform)) {
                 if (player.position.x <= platform.position.x && (keysPressed.right || keysPressed.dashRight)) {
-                    player.position.x = platform.position.x - player.size.width
+                    player.position.x = platform.position.x - player.size.width - 1
                 } else if (player.position.x >= platform.position.x && (keysPressed.left || keysPressed.dashLeft)) {
-                    player.position.x = platform.position.x + platform.size.width
+                    player.position.x = platform.position.x + platform.size.width + 1
                 }
             }
         }
 
-        for (let enemy of viewPortEnemies) {
+        for (let enemy of enemies) {
             enemy.move()
 
             if (enemy instanceof Turret) {
@@ -283,15 +248,19 @@ function update() {
         for (const [checkpoint, taked] of checkpoints) {
             checkpoint.draw()
 
-            if(checkpoint.position.x >= currentCheckpoint.position.x) {
-                currentCheckpoint = checkpoint
-            }
             //Se il giocatore prende il checkpoint e questo non era ancora stato preso...
-            if(player.intersectX(checkpoint) && !taked) {
-                saveState(checkpoint, id);
+            if(player.intersectX(checkpoint)) {
+                if(!taked)
+                    saveState(checkpoint, id);
+
+                if(checkpoint.position.x >= currentCheckpoint.position.x) {
+                    currentCheckpoint = checkpoint
+                }
             }
         }
     }
+
+    winBlock.draw()
 
     if(player.die) {
         player.position.x = currentCheckpoint.position.x
@@ -311,8 +280,8 @@ addEventListener('keydown', (event) => {
         case "Space":
             if (player.canJump) {
                 player.velocity.y -= player.jumpForce
-                if (player.jumpCount === 1) { //se è il secondo salto, attenualo un pò...
-                    player.velocity.y += 5
+                if (player.jumpCount === 1) { //se è il secondo salto, metto un limite all altezza che il giocatore può raggiungere
+                    player.velocity.y = -player.jumpForce + 3.5
                 }
                 player.canJump = false
             }

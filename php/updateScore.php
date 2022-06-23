@@ -7,7 +7,7 @@ session_start();
 $str_json = file_get_contents('php://input');
 
 $obj = json_decode($str_json);
-$score = $obj->score;
+$score = max($obj->score,0);
 
 //se il giocatore non è arrivato in fondo, ma ha semplicemente cambiato livello
 if ($_SESSION['username']->currentLevel < $_SESSION['levels']) {

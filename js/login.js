@@ -1,36 +1,33 @@
 let form = document.getElementById("loginForm")
 let errorLabel = document.getElementById("logLabel")
 
-form.addEventListener("submit", function(event) {
-    event.preventDefault();
-    let data = new FormData(form)
-    let ajax = new XMLHttpRequest()
+async function doLogin(event) {
+    await fetch(event.target.action, {
+        method: "POST",
+        body: new URLSearchParams(new FormData(event.target)),
+    }).then(response => {
+        console.log(response)
+        if (response.status === 200) {
+            window.location.href = response.url
+        } else {
+            response.text().then(text => {
+                errorLabel.innerText = text
+            })
+        }
+    })
+}
 
-    let valid = valide(data)
-    if(!valid) {
+form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    if(!valide(form.username.value, form.password.value)) {
         return
     }
 
-    ajax.open('POST', '../php/login.php')
-    ajax.onload = function() {
-        if (ajax.status === 200) {
-            document.open()
-            document.write(ajax.responseText)
-            document.close()
-        } else if(ajax.status === 500){
-            errorLabel.innerText = "Impossibile stabilire una connessione con il server"
-        }else {
-            errorLabel.innerText = "Username non esistente o password errata"
-        }
-    }
-
-    ajax.send(data)
+    await doLogin(e);
 })
 
-function valide(form) {
-    let username = form.get("username")
-    let password = form.get("password")
 
+function valide(username, password) {
     if (username.length === 0 || password.length === 0) {
         errorLabel.innerText = "Username o password non settate"
         return false
