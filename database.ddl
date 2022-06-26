@@ -11,3 +11,5 @@ CREATE TABLE SquoshyDB.players (
   currentScore  int(10),
   maxScore     int(10),
   PRIMARY KEY (username));
+
+INSERT INTO SquoshyDB.players (username, password, currentLevel, spawnPointX, spawnPointY, currentScore, maxScore) VALUES ('admin', '$2y$10$2DyHF0XjA7qi14cpE1fP4e4s70LeWkpzP7CnusDPrLYGFayzkHZKa', 1, 0, 0, NULL, 0);
