@@ -5,8 +5,6 @@ export let blockSize = undefined
 export let isLastLevel = false
 
 function build(level1, images = {dirt: undefined, coin: undefined, enemy: undefined, turret: undefined, bird: undefined, checkPoint: undefined, grass: undefined}) {
-    // let sizeOfOneBlock = Math.min(100, Math.round(innerHeight / level1.length))
-    // sizeOfOneBlock = Math.max(sizeOfOneBlock, 70)
 
     blockSize = 100
 
@@ -155,66 +153,74 @@ function build(level1, images = {dirt: undefined, coin: undefined, enemy: undefi
 
 export function level1() {
     const level = nextLevel()
+    if(level === undefined) return undefined
 
     const images = {}
-    images.dirt = getImage("./assets/ground/dirt.png")
-    images.grass = getImage("./assets/ground/grass.png")
-    images.winBlock = getImage("./assets/win/door.png")
-    images.turret = getImage("./assets/turret/turret.png")
-    images.bird = getImage("./assets/bat/bat.png")
-    images.checkpoint = getImage("./assets/checkpoint/checkpoint.png")
-    images.enemy = getImage("./assets/classicEnemy/enemy.png")
-    images.coin = getImage("./assets/coin/coin.png")
+    images.dirt = getImage("../assets/ground/dirt.png")
+    images.grass = getImage("../assets/ground/grass.png")
+    images.winBlock = getImage("../assets/win/door.png")
+    images.turret = getImage("../assets/turret/turret.png")
+    images.bird = getImage("../assets/bat/bat.png")
+    images.checkpoint = getImage("../assets/checkpoint/checkpoint.png")
+    images.enemy = getImage("../assets/classicEnemy/enemy.png")
+    images.coin = getImage("../assets/coin/coin.png")
 
     let buildedLevel = build(level, images)
-    buildedLevel.background = getImage('./assets/bg/background0.png')
+    buildedLevel.background = getImage('../assets/bg/background0.png')
 
     return buildedLevel
 }
 
 export function level2() {
     const level = nextLevel()
+    if(level === undefined) return undefined
 
     const images = {}
-    images.dirt = getImage("./assets/ground/dirt.png")
-    images.grass = getImage("./assets/ground/grass.png")
-    images.winBlock = getImage("./assets/win/door.png")
-    images.turret = getImage("./assets/turret/turret.png")
-    images.bird = getImage("./assets/bat/bat.png")
-    images.checkpoint = getImage("./assets/checkpoint/checkpoint.png")
-    images.enemy = getImage("./assets/classicEnemy/enemy.png")
-    images.coin = getImage("./assets/coin/coin.png")
+    images.dirt = getImage("../assets/ground/dirt.png")
+    images.grass = getImage("../assets/ground/grass.png")
+    images.winBlock = getImage("../assets/win/door.png")
+    images.turret = getImage("../assets/turret/turret.png")
+    images.bird = getImage("../assets/bat/bat.png")
+    images.checkpoint = getImage("../assets/checkpoint/checkpoint.png")
+    images.enemy = getImage("../assets/classicEnemy/enemy.png")
+    images.coin = getImage("../assets/coin/coin.png")
 
     let buildedLevel = build(level, images)
-    buildedLevel.background = getImage('./assets/bg/background1.png')
+    buildedLevel.background = getImage('../assets/bg/background1.png')
 
     return buildedLevel
 }
 
 export function level3() {
     const level = nextLevel()
+    if(level === undefined) return undefined
 
     const images = {}
-    images.dirt = getImage("./assets/ground/dirt.png")
-    images.grass = getImage("./assets/ground/grass.png")
-    images.winBlock = getImage("./assets/win/door.png")
-    images.turret = getImage("./assets/turret/turret.png")
-    images.bird = getImage("./assets/bat/bat.png")
-    images.checkpoint = getImage("./assets/checkpoint/checkpoint.png")
-    images.enemy = getImage("./assets/classicEnemy/enemy.png")
-    images.coin = getImage("./assets/coin/coin.png")
+    images.dirt = getImage("../assets/ground/dirt.png")
+    images.grass = getImage("../assets/ground/grass.png")
+    images.winBlock = getImage("../assets/win/door.png")
+    images.turret = getImage("../assets/turret/turret.png")
+    images.bird = getImage("../assets/bat/bat.png")
+    images.checkpoint = getImage("../assets/checkpoint/checkpoint.png")
+    images.enemy = getImage("../assets/classicEnemy/enemy.png")
+    images.coin = getImage("../assets/coin/coin.png")
 
     let buildedLevel = build(level, images)
-    buildedLevel.background = getImage('./assets/bg/background2.jpg')
+    buildedLevel.background = getImage('../assets/bg/background2.jpg')
 
     return buildedLevel
 }
 
 function nextLevel() {
     const ajax = new XMLHttpRequest()
-    ajax.open('GET', './php/levels.php', false)
+    ajax.open('GET', '../php/levels.php', false)
     ajax.send()
-    console.log(ajax.responseText)
+
+    if(ajax.status === 500) {
+        alert(ajax.responseText)
+        return undefined
+    }
+
     let data = JSON.parse(ajax.responseText)
     let level = data.level
     isLastLevel = data.lastLevel

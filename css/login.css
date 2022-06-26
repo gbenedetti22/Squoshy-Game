@@ -7,7 +7,6 @@
     margin: auto;
     width: 35%;
     height: 53%;
-    /*box-shadow: 0 0 15px #888888;*/
     border-radius: 15px;
     padding: 20px;
     background: #ffffff;
@@ -43,15 +42,47 @@ body {
     color: red;
 }
 
+/*.password-form i{*/
+/*    position: absolute;*/
+/*    right: 0;*/
+/*    padding-right: 100px;*/
+/*    padding-top: 20px;*/
+/*    font-size: 19px;*/
+/*}*/
+
+.input-group input {
+    width: 100%;
+}
+
+.password-form {
+    display: flex;
+    flex-direction: row;
+    align-items : center;
+    justify-content: right;
+}
+
+.password-form i {
+    cursor: pointer;
+    position: absolute;
+    font-size: 20px;
+    color: #5f5f5f;
+}
+
+.input-group > label {
+    font-size: 13px;
+    color: #c4c4c4;
+    font-family: 'Open Sans', sans-serif;
+}
+
+
 .fields > label {
     font-size: 13px;
     color: #c4c4c4;
     font-family: 'Open Sans', sans-serif;
 }
 
-form > a {
+.register-link {
     padding-top: 20px;
-    width: 100%;
     text-align: center;
     wrap-option: nowrap;
     position: absolute;
@@ -63,7 +94,7 @@ form > a {
     font-family: 'Open Sans', sans-serif;
 }
 
-form > a:visited {
+.register-link > a:visited {
     text-decoration: none;
     color: blue;
 }

@@ -3,7 +3,6 @@ include 'util.php';
 
 session_start();
 
-
 $str_json = file_get_contents('php://input');
 
 $obj = json_decode($str_json);
@@ -22,6 +21,8 @@ if ($_SESSION['username']->currentLevel < $_SESSION['levels']) {
     }
 
     $_SESSION['username']->currentLevel += 1;
+    $_SESSION['username']->spawnPointX = 0;
+    $_SESSION['username']->spawnPointY = 0;
 } else {
     $totalScore = $_SESSION['username']->currentScore + $score;
 

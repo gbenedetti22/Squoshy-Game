@@ -12,6 +12,7 @@ if (login($username, $password)) {
     exit(0);
 } else {
     http_response_code(500);
+    session_destroy();
     echo $responseText;
     exit(1);
 }

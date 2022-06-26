@@ -58,7 +58,7 @@ if($password == $repeat_password) {
         $_SESSION['username'] = $response;
 
         header("Location: ../html/game.html");
-        exit(0);
+        exit();
     } else {
         http_response_code(500);
         echo "Utente già esistente";

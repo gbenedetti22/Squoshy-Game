@@ -1,13 +1,16 @@
-let form = document.getElementById("loginForm")
-let errorLabel = document.getElementById("logLabel")
+const form = document.getElementById("loginForm")
+const errorLabel = document.getElementById("logLabel")
+const username = document.getElementById("username")
+const passwordField = document.getElementById("password")
+const showPasswwordButton = document.getElementById("showPassword")
 
 async function doLogin(event) {
     await fetch(event.target.action, {
         method: "POST",
         body: new URLSearchParams(new FormData(event.target)),
     }).then(response => {
-        console.log(response)
         if (response.status === 200) {
+            localStorage.setItem("username", username.value)
             window.location.href = response.url
         } else {
             response.text().then(text => {
@@ -19,13 +22,19 @@ async function doLogin(event) {
 
 form.addEventListener("submit", async (e) => {
     e.preventDefault();
-    if(!valide(form.username.value, form.password.value)) {
+    if (!valide(form.username.value, form.password.value)) {
         return
     }
 
     await doLogin(e);
 })
 
+let canShow = true
+showPasswwordButton.addEventListener('click', () => {
+    canShow = !canShow
+    showPasswwordButton.className = canShow ? "far fa-eye" : "far fa-eye-slash"
+    passwordField.type = canShow ? "password" : "text"
+})
 
 function valide(username, password) {
     if (username.length === 0 || password.length === 0) {
@@ -49,3 +58,4 @@ function valide(username, password) {
 
     return true
 }
+localStorage.clear() // in caso rimanga lo username del vecchio login

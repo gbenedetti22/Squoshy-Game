@@ -1,6 +1,6 @@
 import {isLastLevel, level1, level2, level3} from "./levels.js";
-import {CheckPoint, Platform, Player, Turret} from "./entities.js";
-import {canvas, ctx, debug_mode, keysPressed, options} from "./data.js";
+import {CheckPoint, Cloudy, Platform, Player, Turret} from "./entities.js";
+import {canvas, ctx, debug_mode, getOptions, keysPressed} from "./data.js";
 
 canvas.width = window.innerWidth
 canvas.height = window.innerHeight
@@ -9,6 +9,7 @@ document.body.append(canvas)
 let player = undefined
 let entities, platforms, enemies, coins, checkpoints, winBlock, backgroundImage = undefined
 let currentCheckpoint = undefined
+const tutorial = new Cloudy()
 
 const unlockedPowers = {
     doubleJump: false,
@@ -20,13 +21,13 @@ let currentLevel = 0
 let score = 0
 
 function init(options = {spawnPointX: 0, spawnPointY: 0, currentLevel: 1}) {
-    console.log("init", options)
     player = new Player({x: options.spawnPointX, y: options.spawnPointY})
     currentCheckpoint = CheckPoint.defaultCheckpoint()
     currentLevel = options.currentLevel
+    tutorial.hide = false
 
     let level = undefined
-    switch (options.currentLevel) {
+    switch (currentLevel) {
         case 1:
             level = level1()
             unlockedPowers.doubleJump = false
@@ -43,8 +44,10 @@ function init(options = {spawnPointX: 0, spawnPointY: 0, currentLevel: 1}) {
             unlockedPowers.dash = true
             break
         default:
-            return
+            return false
     }
+
+    if(!level) return false
 
     entities = level.entities
     platforms = level.platforms
@@ -58,13 +61,13 @@ function init(options = {spawnPointX: 0, spawnPointY: 0, currentLevel: 1}) {
 
     let previousCheckpoints = localStorage.getItem("checkpoints")
 
-    if(previousCheckpoints) {
+    if (previousCheckpoints) {
         previousCheckpoints = new Map(JSON.parse(previousCheckpoints))
         console.log("previousCheckpoints", previousCheckpoints)
 
-        for(let [currentCheckpoint] of checkpoints) {
+        for (let [currentCheckpoint] of checkpoints) {
             for (let [previousCheckpoint, taked2] of previousCheckpoints) {
-                if(currentCheckpoint.position.x === previousCheckpoint.position.x && currentCheckpoint.position.y === previousCheckpoint.position.y) {
+                if (currentCheckpoint.position.x === previousCheckpoint.position.x && currentCheckpoint.position.y === previousCheckpoint.position.y) {
                     checkpoints.set(currentCheckpoint, taked2)
                 }
             }
@@ -79,6 +82,8 @@ function init(options = {spawnPointX: 0, spawnPointY: 0, currentLevel: 1}) {
 
         entitiesX.get(entity.position.x).push(entity)
     })
+
+    return true
 }
 
 let t1 = 0
@@ -130,6 +135,8 @@ function update() {
     }
 
     player.move()
+    tutorial.follow = player
+    tutorial.showMessage(currentLevel)
 
     //Se il giocatore vince
     if (player.intersectX(winBlock) || player.intersectY(winBlock)) {
@@ -138,16 +145,21 @@ function update() {
         //Se il giocatore ha raggiunto la fine del gioco..
         if (isLastLevel) {
             cancelAnimationFrame(id)
+            clearStorage()
             ctx.clearRect(0, 0, canvas.width, canvas.height)
             window.location.href = "/ProgettoPWeb/html/scoreboard.html"
-            localStorage.clear()
             return
         }
 
-        localStorage.clear()
-        init({currentLevel: currentLevel + 1, spawnPointX: 0, spawnPointY: 0})
-    }
-    else {
+        clearStorage()
+        if(!init({currentLevel: currentLevel + 1, spawnPointX: 0, spawnPointY: 0})){
+            cancelAnimationFrame(id)
+            clearStorage()
+            ctx.clearRect(0, 0, canvas.width, canvas.height)
+            window.location.href = "/ProgettoPWeb/index.php"
+            return
+        }
+    } else {
         //collision detection
         for (let platform of platforms) {
             platform.draw()
@@ -173,7 +185,7 @@ function update() {
             if (enemy instanceof Turret) {
                 enemy.shoot()
                 if (player.intersectX(enemy.bullet)) {
-                    if(!debug_mode) {
+                    if (!debug_mode) {
                         player.die = true
                     }
 
@@ -182,7 +194,7 @@ function update() {
             }
 
             if (player.intersectX(enemy)) {
-                if(!debug_mode) {
+                if (!debug_mode) {
                     player.die = true
                 }
                 console.log("colpito e affondato")
@@ -196,7 +208,7 @@ function update() {
                     if (entities !== undefined)
                         entities.splice(entities.indexOf(enemy), 1)
 
-                    player.velocity.y -= player.jumpForce * 2
+                    player.velocity.y -= player.jumpForce + 3.5
                     score += enemy.score
                     console.log("ucciso enemy, point: ", enemy.score)
                 }
@@ -238,7 +250,6 @@ function update() {
 
             if (player.intersectX(coin)) {
 
-                //remove element from array coins
                 coins = coins.filter(c => c !== coin)
                 score += 2
                 console.log("hai preso un coin")
@@ -249,11 +260,11 @@ function update() {
             checkpoint.draw()
 
             //Se il giocatore prende il checkpoint e questo non era ancora stato preso...
-            if(player.intersectX(checkpoint)) {
-                if(!taked)
+            if (player.intersectX(checkpoint)) {
+                if (!taked)
                     saveState(checkpoint, id);
 
-                if(checkpoint.position.x >= currentCheckpoint.position.x) {
+                if (checkpoint.position.x >= currentCheckpoint.position.x) {
                     currentCheckpoint = checkpoint
                 }
             }
@@ -262,7 +273,7 @@ function update() {
 
     winBlock.draw()
 
-    if(player.die) {
+    if (player.die) {
         player.position.x = currentCheckpoint.position.x
         player.position.y = currentCheckpoint.position.y
         player.velocity.x = 0
@@ -279,9 +290,10 @@ addEventListener('keydown', (event) => {
     switch (event.code) {
         case "Space":
             if (player.canJump) {
-                player.velocity.y -= player.jumpForce
+                player.velocity.y = -player.jumpForce
                 if (player.jumpCount === 1) { //se è il secondo salto, metto un limite all altezza che il giocatore può raggiungere
                     player.velocity.y = -player.jumpForce + 3.5
+                    tutorial.hide = true
                 }
                 player.canJump = false
             }
@@ -299,12 +311,13 @@ addEventListener('keydown', (event) => {
             keysPressed.right = true
             break
         case "ShiftLeft":
-            if(!unlockedPowers.dash) return
+            if (!unlockedPowers.dash) return
 
             if (keysPressed.right)
                 dashRight()
             else if (keysPressed.left)
                 dashLeft()
+            tutorial.hide = true
             break
     }
 })
@@ -323,7 +336,7 @@ addEventListener('keyup', (event) => {
             player.canDash = true
             break
         case "Space":
-            if(!unlockedPowers.doubleJump) return
+            if (!unlockedPowers.doubleJump) return
 
             player.jumpCount++
             if (player.jumpCount < 2) {
@@ -359,7 +372,7 @@ function updateServer(id) {
     conn.setRequestHeader("Content-type", "application/json")
     conn.onload = () => {
         console.log(conn.responseText)
-        if(conn.status !== 200) {
+        if (conn.status !== 200) {
             console.log("Errore: ", conn.status)
         }
 
@@ -403,6 +416,18 @@ function saveState(checkpoint, id) {
 
 
 window.onload = function () {
-    init(options)
+    const options = getOptions()
+    if (!options) return
+
+    if(!init(options)) {
+        window.location.href = "/ProgettoPWeb/index.php"
+        return
+    }
     update()
+}
+
+function clearStorage() {
+    const username = localStorage.getItem("username")
+    localStorage.clear()
+    localStorage.setItem("username", username)
 }

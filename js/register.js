@@ -1,5 +1,8 @@
 let form = document.getElementById("registerForm")
 let errorLabel = document.getElementById("logLabel")
+const showPasswwordButton = document.getElementById("showPassword")
+const passwordField = document.getElementById("password")
+const repeatPassword = document.getElementById("repeat_password")
 
 form.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -25,6 +28,14 @@ async function doRegister(event) {
         }
     })
 }
+
+let canShow = true
+showPasswwordButton.addEventListener('click', () => {
+    canShow = !canShow
+    showPasswwordButton.className = canShow ? "far fa-eye" : "far fa-eye-slash"
+    passwordField.type = canShow ? "password" : "text"
+    repeatPassword.type = canShow ? "password" : "text"
+})
 
 function valide(username, password1, password2) {
 

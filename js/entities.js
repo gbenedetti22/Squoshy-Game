@@ -225,10 +225,6 @@ export class CheckPoint extends Entity {
     static defaultCheckpoint() {
         return new CheckPoint({x: 0, y: 0, width: 30, height: 60})
     }
-
-    setDefaultColor() {
-        this.color = "grey"
-    }
 }
 
 export class Player extends Entity {
@@ -272,6 +268,59 @@ export class Player extends Entity {
             this.jumpCount = 0
             this.canJump = true
         }
+    }
+}
+
+export class Cloudy extends Entity {
+    constructor() {
+        super({x:0, y:0, width: 60, height: 60, color: "white"})
+        this.follow = undefined
+        this.hide = false
+    }
+
+    showMessage(level) {
+        if(this.hide) return
+
+        switch (level) {
+            case 1:
+                break
+            case 2:
+                this.text = "   Doppio salto\nPremi 2 volte\nla barra spaziatrice"
+                this.draw()
+                break
+            case 3:
+                this.text = "  Dash\nPremi shift\nper andare veloce!"
+                this.draw()
+                break
+        }
+    }
+
+    draw() {
+        let x = this.follow.position.x
+        let y = this.follow.position.y - 60
+        let prevFont = ctx.font
+        ctx.font = "17px Arial"
+
+        //draw cloud
+        ctx.beginPath()
+        ctx.arc(x, y, 30, Math.PI * 0.5, Math.PI * 1.5)
+        ctx.arc(x + 35, y - 30, 35, Math.PI*1.1, Math.PI * 1.85)
+        ctx.arc(x + 70, y, 50, Math.PI * 1.37, Math.PI * 1.91)
+        ctx.arc(x + 100, y+10, 50, Math.PI * 1.5, Math.PI * 0.12)
+        ctx.moveTo(x + 150, y + 30)
+        ctx.lineTo(x, y + 30)
+        ctx.strokeStyle = '#000000'
+        ctx.lineWidth = 10
+        ctx.stroke()
+        ctx.fillStyle = '#ffffff'
+        ctx.fill()
+
+        ctx.fillStyle = "black";
+        let lines = this.text.split("\n")
+        for (let i = 0; i < lines.length; i++) {
+            ctx.fillText(lines[i], x, y-22+i*20)
+        }
+        ctx.font = prevFont
     }
 }
 
