@@ -4,6 +4,12 @@ const showPasswwordButton = document.getElementById("showPassword")
 const passwordField = document.getElementById("password")
 const repeatPassword = document.getElementById("repeat_password")
 
+/*
+    File JS per la gestione della registrazione
+    Viene annullato il comportamento di defualt del submit form e viene usato AJAX per validare la registrazione.
+    Se la registrazione è ok, il Server risponde con l url a cui il client deve dirigersi
+ */
+
 form.addEventListener("submit", async (e) => {
     e.preventDefault();
     if(!valide(form.username.value, form.password.value, form.repeat_password.value)) {
@@ -18,8 +24,8 @@ async function doRegister(event) {
         method: "POST",
         body: new URLSearchParams(new FormData(event.target)),
     }).then(response => {
-        console.log(response)
         if (response.status === 200) {
+            localStorage.setItem("username", username.value)
             window.location.href = response.url
         } else {
             response.text().then(text => {

@@ -4,6 +4,11 @@ const username = document.getElementById("username")
 const passwordField = document.getElementById("password")
 const showPasswwordButton = document.getElementById("showPassword")
 
+/*
+    File JS per la gestione del login
+    Viene annullato il comportamento di defualt del submit form e viene usato AJAX per validare il login.
+    Se il login è ok, il Server risponde con l url a cui il client deve dirigersi
+ */
 async function doLogin(event) {
     await fetch(event.target.action, {
         method: "POST",

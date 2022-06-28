@@ -1,7 +1,12 @@
 <?php
 include "util.php";
 
-$db = new mysqli('localhost', 'root', '', 'squoshydb');
+/*
+ * File PHP per reperire la classifica dei 10 miglior giocatori
+ * La scelta del numero 10 è arbitraria e non modificabile
+ */
+
+$db = new mysqli('localhost', USERNAME, PASSWORD, DATABASE_NAME);
 $query = "SELECT username, maxScore FROM squoshydb.players ORDER BY maxScore DESC LIMIT 10";
 $result = $db->query($query);
 $scores = array();

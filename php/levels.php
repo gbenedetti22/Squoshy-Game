@@ -1,6 +1,15 @@
 <?php
-
 session_start();
+
+/*
+ * File PHP per il mantenimento dei livelli
+ * Essendo un array e pochi livelli, mi sono permesso di lasciarli dentro al file
+ * E' chiaro che al crescere del numero dei livelli, questi debbano andare sul Database
+ *
+ * Il client richiede il prossimo livello e il Server risponde dandogli la mappa corretta sotto forma di array di string.
+ * Questo è possibile sfruttando la sessione: il Server guarda nella sessione corrente a che livello è il giocatore
+ */
+
 /*
  * Legenda:
  * 0 -> vuoto
@@ -48,6 +57,7 @@ header("Content-Type: application/json");
 echo json_encode($response);
 exit();
 
+// Funzione di utility per vedere se il giocatore è arrivato alla fine del livello
 function isLastLevel(): bool
 {
     return $_SESSION['username']->currentLevel == count(LEVELS);

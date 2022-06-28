@@ -1,10 +1,38 @@
 import {Bird, CheckPoint, Coin, Enemy, Platform, Turret} from "./entities.js"
 import {getImage} from "./data.js"
-
-export let blockSize = undefined
+/*
+    File JS per la gestione dei livelli
+    Qua vengono scaricati dal Server, mediante richieste AJAX, "costruiti" basandosi sull array di string scaricato e
+    settate le immagini
+ */
+export let blockSize = undefined    //grandezza di un singolo blocco
 export let isLastLevel = false
 
-function build(level1, images = {dirt: undefined, coin: undefined, enemy: undefined, turret: undefined, bird: undefined, checkPoint: undefined, grass: undefined}) {
+// funzione di creazione di un livello
+// Il risultato è un oggetto contenente diverse strutture dati che corrispondono agli oggetti creati
+// esempio:
+/*
+    Supponiamo che dal Server venga scaricato il seguente array:
+    mappa = [
+    "0100",
+    "1111" ]
+
+    Dato che gli '1' corrispondo al blocco piattaforma, verrà creato un array platforms con dentro
+    un blocco che ha posizione 0,0, un blocco che ha posizione 1,0, un blocco che ha posizione 2,0 ecc..
+    Nel file games.js questi blocchi vengono letti e piazzati nella posizione che qua è stata settata
+
+    il parametro level corrisponde all array di string (che nell esempio sopra si chiama mappa) e images le immagini
+    da settare per ogni blocco
+ */
+function build(level, images = {
+    dirt: undefined,
+    coin: undefined,
+    enemy: undefined,
+    turret: undefined,
+    bird: undefined,
+    checkPoint: undefined,
+    grass: undefined
+}) {
 
     blockSize = 100
 
@@ -18,8 +46,8 @@ function build(level1, images = {dirt: undefined, coin: undefined, enemy: undefi
     let posX = 0
     let posY = innerHeight - blockSize
 
-    for (let i = level1.length - 1; i >= 0; i--) {
-        let row = level1[i]
+    for (let i = level.length - 1; i >= 0; i--) {
+        let row = level[i]
 
         for (let j = 0; j < row.length; j++) {
             switch (row.charAt(j)) {
@@ -136,9 +164,9 @@ function build(level1, images = {dirt: undefined, coin: undefined, enemy: undefi
         for (let block of platforms) {
             //check if there is a block up the current block
             for (let block2 of platforms) {
-                if(block === block2) continue;
+                if (block === block2) continue;
 
-                if (block2.position.y === block.position.y-blockSize && block2.position.x === block.position.x) {
+                if (block2.position.y === block.position.y - blockSize && block2.position.x === block.position.x) {
                     block.image = images.dirt
                 }
             }
@@ -148,52 +176,40 @@ function build(level1, images = {dirt: undefined, coin: undefined, enemy: undefi
         posY -= blockSize
     }
 
-    return {entities, platforms, enemies, coins, checkpoints ,winBlock};
+    return {entities, platforms, enemies, coins, checkpoints, winBlock};
 }
 
 export function level1() {
-    const level = nextLevel()
-    if(level === undefined) return undefined
+    let buildedLevel = nextLevel()
+    if (buildedLevel === undefined) return undefined
 
-    const images = {}
-    images.dirt = getImage("../assets/ground/dirt.png")
-    images.grass = getImage("../assets/ground/grass.png")
-    images.winBlock = getImage("../assets/win/door.png")
-    images.turret = getImage("../assets/turret/turret.png")
-    images.bird = getImage("../assets/bat/bat.png")
-    images.checkpoint = getImage("../assets/checkpoint/checkpoint.png")
-    images.enemy = getImage("../assets/classicEnemy/enemy.png")
-    images.coin = getImage("../assets/coin/coin.png")
-
-    let buildedLevel = build(level, images)
     buildedLevel.background = getImage('../assets/bg/background0.png')
 
     return buildedLevel
 }
 
 export function level2() {
-    const level = nextLevel()
-    if(level === undefined) return undefined
+    let buildedLevel = nextLevel()
+    if (buildedLevel === undefined) return undefined
 
-    const images = {}
-    images.dirt = getImage("../assets/ground/dirt.png")
-    images.grass = getImage("../assets/ground/grass.png")
-    images.winBlock = getImage("../assets/win/door.png")
-    images.turret = getImage("../assets/turret/turret.png")
-    images.bird = getImage("../assets/bat/bat.png")
-    images.checkpoint = getImage("../assets/checkpoint/checkpoint.png")
-    images.enemy = getImage("../assets/classicEnemy/enemy.png")
-    images.coin = getImage("../assets/coin/coin.png")
-
-    let buildedLevel = build(level, images)
     buildedLevel.background = getImage('../assets/bg/background1.png')
 
     return buildedLevel
 }
 
 export function level3() {
-    const level = nextLevel()
-    if(level === undefined) return undefined
+    let buildedLevel = nextLevel()
+    if (buildedLevel === undefined) return undefined
+
+    buildedLevel.background = getImage('../assets/bg/background2.jpg')
+
+    return buildedLevel
+}
+
+// metodo stub per l assegnamento delle immagini per ogni blocco
+function nextLevel() {
+    const level = getNextLevelFromServer()
+    if (level === undefined) return undefined
 
     const images = {}
     images.dirt = getImage("../assets/ground/dirt.png")
@@ -205,18 +221,16 @@ export function level3() {
     images.enemy = getImage("../assets/classicEnemy/enemy.png")
     images.coin = getImage("../assets/coin/coin.png")
 
-    let buildedLevel = build(level, images)
-    buildedLevel.background = getImage('../assets/bg/background2.jpg')
-
-    return buildedLevel
+    return build(level, images)
 }
 
-function nextLevel() {
+// metodo per scaricare dal Server la mappa tramite AJAX
+function getNextLevelFromServer() {
     const ajax = new XMLHttpRequest()
-    ajax.open('GET', '../php/levels.php', false)
+    ajax.open('GET', '../php/levels.php', false) // non asincrona in quanto senza mappa, il gioco non parte
     ajax.send()
 
-    if(ajax.status === 500) {
+    if (ajax.status === 500) {
         alert(ajax.responseText)
         return undefined
     }
