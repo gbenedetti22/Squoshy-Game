@@ -110,7 +110,7 @@ function init(options = {spawnPointX: 0, spawnPointY: 0, currentLevel: 1, curren
 
     let previousScore = localStorage.getItem("score")
     if (previousScore) {
-        score = previousScore
+        score = Number(previousScore)
     }
 
     console.log(score)
@@ -141,6 +141,7 @@ function update() {
     now = then - (elapsed % nFrames)
     ctx.clearRect(0, 0, canvas.width, canvas.height)
     ctx.save()
+    showScore()
 
     // valore che stabilisce da che punto la schermata deve muoversi orizzontalmente
     let limitX = Math.round(innerWidth / 2)
@@ -206,7 +207,7 @@ function update() {
 
         //..altrimenti inizializzo il livello successivo
         clearStorage()
-        if (!init({currentLevel: currentLevel + 1, spawnPointX: 0, spawnPointY: 0})) {
+        if (!init({currentLevel: currentLevel + 1, spawnPointX: 0, spawnPointY: 0, currentScore: score+5})) {
             cancelAnimationFrame(id)
             clearStorage()
             ctx.clearRect(0, 0, canvas.width, canvas.height)
@@ -283,7 +284,7 @@ function update() {
                     enemies.splice(enemies.indexOf(enemy), 1)
 
                     player.velocity.y -= player.jumpForce + 3.5 // eseguo un saltino
-                    score += enemy.score
+                    score += Number(enemy.score)
                     console.log("ucciso enemy, point: ", enemy.score)
                 }
             }
@@ -518,8 +519,26 @@ function clearStorage() {
 
 // funzione di utiliti per poter terminare (mostrando un alert) il gioco in caso di errore
 // id corrisponde all id del prossimo animationFrame
+let failed = false  // aevita che la funzione sia chiamata più volte (causa l asincronia)
 function exit(id, message="") {
+    if(failed) return
+
+    failed = true
     cancelAnimationFrame(id)
     alert(message)
     window.location.href = "/ProgettoPWeb/index.php"
+}
+
+// Funzione per mostrare lo score corrente in alto a destra
+function showScore() {
+    ctx.save()
+
+    ctx.fillStyle = "white"
+    ctx.fillRect(canvas.width-300, 80, 230, 70)
+
+    ctx.font = "30px sans-serif"
+    ctx.fillStyle = "black"
+    ctx.fillText(`Score: ${score}`, canvas.width-250, 125)
+
+    ctx.restore()
 }

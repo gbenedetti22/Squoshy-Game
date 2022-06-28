@@ -1,6 +1,7 @@
 <?php
 include "util.php";
 session_start();
+
 /*
  * File PHP per il salvataggio dello stato corrente tramite dei checkpoint
  *

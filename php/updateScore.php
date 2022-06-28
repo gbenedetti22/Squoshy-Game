@@ -22,7 +22,7 @@ $score += 5;
 if ($_SESSION['username']->currentLevel < $_SESSION['levels']) {
     // Aggiorno lo score nella sessione
     if (isset($_SESSION['username'])) {
-        $_SESSION['username']->currentScore += $score;
+        $_SESSION['username']->currentScore = $score;
     } else {
         fail();
     }
@@ -42,7 +42,7 @@ if ($_SESSION['username']->currentLevel < $_SESSION['levels']) {
     // Se il giocatore ha raggiunto la fine..
 
     // Calcolo lo score totale
-    $totalScore = $_SESSION['username']->currentScore + $score;
+    $totalScore = $score;
 
     // Setto nel database lo score raggiunto
     if (!setTotalScore($totalScore)) {
