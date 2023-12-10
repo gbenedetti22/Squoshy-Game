@@ -201,7 +201,7 @@ function update() {
             cancelAnimationFrame(id)
             clearStorage()
             ctx.clearRect(0, 0, canvas.width, canvas.height)
-            window.location.href = "/ProgettoPWeb/html/scoreboard.html"
+            window.location.href = "../html/scoreboard.html"
             return
         }
 
@@ -211,7 +211,7 @@ function update() {
             cancelAnimationFrame(id)
             clearStorage()
             ctx.clearRect(0, 0, canvas.width, canvas.height)
-            window.location.href = "/ProgettoPWeb/index.php"
+            window.location.href = "../index.php"
             return
         }
     } else {
@@ -504,7 +504,7 @@ window.onload = function () {
     if (!options) return
 
     if (!init(options)) {
-        window.location.href = "/ProgettoPWeb/index.php"
+        window.location.href = "../index.php"
         return
     }
 
@@ -526,7 +526,7 @@ function exit(id, message="") {
     failed = true
     cancelAnimationFrame(id)
     alert(message)
-    window.location.href = "/ProgettoPWeb/index.php"
+    window.location.href = "../index.php"
 }
 
 // Funzione per mostrare lo score corrente in alto a destra

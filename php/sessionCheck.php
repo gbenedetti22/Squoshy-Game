@@ -1,4 +1,5 @@
 <?php
+include 'util.php';
 session_start();
 
 /*
@@ -10,6 +11,7 @@ session_start();
  * (come se si fosse loggato)
  */
 if (isset($_SESSION['username'])) {
-    header("Location: /ProgettoPWeb/html/game.html");
+    $dirname = basename(getcwd());
+    header("Location: /{$dirname}/html/game.html");
     exit(0);
 }
